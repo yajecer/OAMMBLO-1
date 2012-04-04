@@ -18,7 +18,6 @@ public abstract class BackgroundTask {
     public abstract void error(Throwable error);
 
     private class BackgroundThread extends Thread {
-        boolean errorOcurred = false;
 
         Throwable err = null;
 
@@ -26,7 +25,6 @@ public abstract class BackgroundTask {
             try {
                 work();
             } catch (Throwable e) {
-                errorOcurred = true;
                 err = e;
             }
 
@@ -34,7 +32,7 @@ public abstract class BackgroundTask {
 
                 @Override
                 public void run() {
-                    if (errorOcurred) {
+                    if (err != null) {
                         error(err);
                     } else {
                         try {

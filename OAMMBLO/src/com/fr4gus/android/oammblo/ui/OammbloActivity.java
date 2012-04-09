@@ -1,6 +1,7 @@
 package com.fr4gus.android.oammblo.ui;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Window;
 
@@ -19,6 +20,10 @@ public class OammbloActivity extends Activity {
         //Se puede hacer de manera programada. La ventaja es que solo se 
         //hace desde aqui en vez de ir a modificar el AndroidManifest.xml
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+    }
+    
+    public void startActivityByClass(Class clazz) {
+    	startActivity(new Intent(this, clazz));
     }
 
 }

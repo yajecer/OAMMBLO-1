@@ -7,4 +7,7 @@
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
+    <string name="app_description">OAMMBLO\n(Otra Aplicación Más de MicroBLOgging)</string>
+    
+    <string name="dashboard_tweet">Tweet!</string>
 </resources>

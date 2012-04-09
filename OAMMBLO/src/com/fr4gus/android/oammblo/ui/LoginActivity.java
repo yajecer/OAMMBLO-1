@@ -14,6 +14,6 @@ public class LoginActivity extends OammbloActivity {
     }
 
     public void login(View view) {
-        
+        startActivityByClass(DashBoardActivity.class);
     }
 }

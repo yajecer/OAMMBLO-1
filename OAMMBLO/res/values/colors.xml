@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="app_blue">#3E618C</color>
+    <color name="app_gray">#CCCCCC</color>
+    <color name="app_gray_bar">#666</color>
     
+    <color name="btn_blue_normal">#3E618C</color>
+    <color name="btn_blue_pressed">#fff</color>
+    <color name="btn_blue_selected">#5A8DCE</color>
+    <color name="btn_blue_disabled">#A6C2CE</color>
+    
+    <color name="btn_white_normal">#ffffff</color>
+    <color name="btn_white_pressed">#cc6666</color>
+    <color name="btn_white_selected">#ffffff</color>
+    <color name="btn_white_disabled">#cccccc</color>
 </resources>

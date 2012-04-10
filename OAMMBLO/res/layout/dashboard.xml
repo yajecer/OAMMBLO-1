@@ -50,7 +50,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginLeft="30dp"
-            />
+            android:onClick="openTimeline"/>
 
         <Button
             android:id="@+id/dashboard_lists"

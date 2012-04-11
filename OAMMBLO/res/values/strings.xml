@@ -2,12 +2,15 @@
 <resources>
 
     <string name="app_name">OAMMBLO</string>
-	
+    <string name="app_description">OAMMBLO\n(Otra Aplicación Más de MicroBLOgging)</string>
+    	
     <!-- Login -->
     <string name="login_username">Username</string>
     <string name="login_password">Password</string>
     <string name="login_button">Login</string>
-    <string name="app_description">OAMMBLO\n(Otra Aplicación Más de MicroBLOgging)</string>
+    <string name="login_authenticate">Authenticate with Twitter</string>
+    <string name="login_authentication_error">Unable to authenticate with Twitter. Please try again later.</string>
     
+    <!-- Dashboard -->
     <string name="dashboard_tweet">Tweet!</string>
 </resources>

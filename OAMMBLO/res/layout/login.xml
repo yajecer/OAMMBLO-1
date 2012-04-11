@@ -18,25 +18,8 @@
 		    android:layout_marginBottom="20dp"
 		    android:gravity="center_horizontal"
 		    android:text="@string/app_description" />
-		
-	    <EditText
-	        android:id="@+id/login_username"
-			style="@style/FormField"
-			android:hint="@string/login_username"
-	        android:ems="10" >
-	
-	        <requestFocus />
-	    </EditText>
-	
-	    <EditText
-	        android:id="@+id/login_password"
-			style="@style/FormField"
-			android:hint="@string/login_password"
-	        android:ems="10"
-	        android:inputType="textPassword" />
 	
 	    <Button
-	        android:id="@+id/button1"
 	        style="@style/BlueButton"
 	        android:layout_gravity="center_horizontal"
 	        android:layout_width="wrap_content"
@@ -45,7 +28,8 @@
 	        android:paddingBottom="10dp"
 	        android:paddingLeft="20dp"
 	        android:paddingRight="20dp"
-	        android:text="@string/login_button" android:onClick="login"/>
+	        android:text="@string/login_authenticate" 
+	        android:onClick="authenticate"/>
 	
 	</LinearLayout>
 </FrameLayout>

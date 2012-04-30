@@ -17,6 +17,12 @@ public class DummyTwitterService implements TwitterService {
         timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Este es un mensaje de prueba"));
         timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Probando Oamblo"));
         timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Tweet tweet como el pajarito azul"));
+        timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Probando Oamblo 1"));
+        timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Tweet tweet como el pajarito verde"));
+        timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Probando Oamblo 2"));
+        timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Tweet tweet como el pajarito naranjan"));
+        timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Probando Oamblo 3"));
+        timeline.add( new Tweet(System.currentTimeMillis(), "fr4gus", "Tweet tweet como el pajarito purpura"));
     }
     
     @Override

@@ -6,6 +6,8 @@ import oauth.signpost.OAuth;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
 import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
 import twitter4j.auth.AccessToken;
 import android.content.Context;
 import android.content.Intent;
@@ -23,13 +25,14 @@ public class Twitter4JService implements TwitterService {
 
     public static final String STORE_SECRET_TOKEN = "secret-token";
 
-    public static final String CONSUMER_KEY = "SU CONSUMER KEY AQUI";
+    public static final String CONSUMER_KEY = "5l4AizkyC3rr8X6q9lcqzg";
 
-    public static final String CONSUMER_SECRET_KEY = "SU CONSUMER SECRET KEY AQUI";
+    public static final String CONSUMER_SECRET_KEY = "JgtJ6Uc9BJo10tvnq4PwK6Qqah3Vt9GGTJr3h8KcfwM";
 
     public static final String OAUTH_CALLBACK_SCHEME = "x-oauth-twitter";
 
-    private static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME + "://callback";
+    private static final String OAUTH_CALLBACK_URL = OAUTH_CALLBACK_SCHEME
+            + "://callback";
 
     // Current user keys
     private static AccessToken accessToken;
@@ -48,11 +51,25 @@ public class Twitter4JService implements TwitterService {
 
     @Override
     public boolean checkForSavedLogin(Context ctx) {
-        SharedPreferences prefs = ctx.getSharedPreferences(STORE_KEY, Context.MODE_PRIVATE);
+        SharedPreferences prefs = ctx.getSharedPreferences(STORE_KEY,
+                Context.MODE_PRIVATE);
         String token = prefs.getString(STORE_TOKEN, null);
         String secret = prefs.getString(STORE_SECRET_TOKEN, null);
         if (token != null && secret != null) {
             accessToken = new AccessToken(token, secret);
+
+            twitter = new TwitterFactory().getInstance();
+            twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET_KEY);
+            twitter.setOAuthAccessToken(accessToken);
+            try {
+                LogIt.d(this, "Twitter initialized", twitter.getScreenName());
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (TwitterException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         return accessToken != null;
     }
@@ -60,12 +77,17 @@ public class Twitter4JService implements TwitterService {
     @Override
     public void requestOAuthAccessToken(Context ctx) {
         try {
-            consumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET_KEY);
+            consumer = new CommonsHttpOAuthConsumer(CONSUMER_KEY,
+                    CONSUMER_SECRET_KEY);
 
-            provider = new CommonsHttpOAuthProvider("https://api.twitter.com/oauth/request_token",
-                    "https://api.twitter.com/oauth/access_token", "https://api.twitter.com/oauth/authorize");
-            String oauthUrl = provider.retrieveRequestToken(consumer, OAUTH_CALLBACK_URL);
-            Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(oauthUrl));
+            provider = new CommonsHttpOAuthProvider(
+                    "https://api.twitter.com/oauth/request_token",
+                    "https://api.twitter.com/oauth/access_token",
+                    "https://api.twitter.com/oauth/authorize");
+            String oauthUrl = provider.retrieveRequestToken(consumer,
+                    OAUTH_CALLBACK_URL);
+            Intent myIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(oauthUrl));
             ctx.startActivity(myIntent);
         } catch (Exception e) {
             LogIt.e(this, e, "ERRROR" + e.getMessage());
@@ -74,7 +96,8 @@ public class Twitter4JService implements TwitterService {
 
     public boolean authorize(Context context, Uri uriData) {
         String verifier = null;
-        if (uriData != null && uriData.getScheme().equals(OAUTH_CALLBACK_SCHEME)) {
+        if (uriData != null
+                && uriData.getScheme().equals(OAUTH_CALLBACK_SCHEME)) {
             LogIt.d(this, "callback: " + uriData.getPath());
             verifier = uriData.getQueryParameter(OAuth.OAUTH_VERIFIER);
             LogIt.d(this, "verifier: " + verifier);
@@ -82,9 +105,25 @@ public class Twitter4JService implements TwitterService {
         try {
             if (accessToken == null) {
                 provider.retrieveAccessToken(consumer, verifier);
-                accessToken = new AccessToken(consumer.getToken(), consumer.getConsumerSecret());
+                accessToken = new AccessToken(consumer.getToken(),
+                        consumer.getTokenSecret());
 
                 saveSession(context);
+
+                twitter = new TwitterFactory().getInstance();
+                twitter.setOAuthConsumer(CONSUMER_KEY, CONSUMER_SECRET_KEY);
+                twitter.setOAuthAccessToken(accessToken);
+                try {
+                    LogIt.d(this, "Twitter initialized",
+                            twitter.getScreenName());
+                } catch (IllegalStateException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                } catch (TwitterException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+
             }
             return true;
         } catch (Exception e) {
@@ -94,7 +133,8 @@ public class Twitter4JService implements TwitterService {
     }
 
     public boolean saveSession(Context context) {
-        Editor editor = context.getSharedPreferences(STORE_KEY, Context.MODE_PRIVATE).edit();
+        Editor editor = context.getSharedPreferences(STORE_KEY,
+                Context.MODE_PRIVATE).edit();
         editor.putString(STORE_TOKEN, accessToken.getToken());
         editor.putString(STORE_SECRET_TOKEN, accessToken.getTokenSecret());
         return editor.commit();

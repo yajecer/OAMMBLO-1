@@ -1,13 +1,17 @@
 package com.fr4gus.android.oammblo.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import oauth.signpost.OAuth;
 import oauth.signpost.commonshttp.CommonsHttpOAuthConsumer;
 import oauth.signpost.commonshttp.CommonsHttpOAuthProvider;
+import twitter4j.Paging;
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
+import twitter4j.User;
 import twitter4j.auth.AccessToken;
 import android.content.Context;
 import android.content.Intent;
@@ -45,8 +49,20 @@ public class Twitter4JService implements TwitterService {
 
     @Override
     public List<Tweet> getTimeline() {
-        // TODO Auto-generated method stub
-        return null;
+        List<Tweet> tweets = new ArrayList<Tweet>();
+        
+        try {
+            User user = twitter.verifyCredentials();
+            List<Status> statuses = twitter.getHomeTimeline(new Paging());
+            for(Status status : statuses) {
+                Tweet tweet = new Tweet(status.getCreatedAt().getTime(), status.getUser().getScreenName(), status.getText());
+                tweets.add(tweet);
+            }
+            
+        } catch (TwitterException e) {
+            LogIt.e(this, e, e.getMessage());
+        }
+        return tweets;
     }
 
     @Override

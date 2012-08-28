@@ -9,4 +9,6 @@
     <string name="login_username_hint">Type your username</string>
     <string name="login_password_hint">Password</string>
     <string name="login_button">Login</string>
+    
+    <string name="timeline_title">Timeline</string>
 </resources>

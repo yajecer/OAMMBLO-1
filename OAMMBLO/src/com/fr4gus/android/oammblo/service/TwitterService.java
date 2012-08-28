@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import com.fr4gus.android.oammblo.bo.Tweet;
+
 public abstract class TwitterService {
 	Set<TwitterListener> listeners = new CopyOnWriteArraySet<TwitterListener>();
 
@@ -17,5 +19,5 @@ public abstract class TwitterService {
 
 	public abstract void authenticate(String username, String password);
 
-	public abstract List<String> getTimeline();
+	public abstract List<Tweet> getTimeline();
 }

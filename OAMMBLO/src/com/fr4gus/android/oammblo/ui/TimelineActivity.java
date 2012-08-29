@@ -1,9 +1,11 @@
 package com.fr4gus.android.oammblo.ui;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Debug;
 import android.view.LayoutInflater;
@@ -20,6 +22,9 @@ import com.fr4gus.android.oammblo.service.TwitterService;
 import com.fr4gus.android.oammblo.service.TwitterServiceFactory;
 
 public class TimelineActivity extends Activity {
+	public static enum TweetType {
+		TWEET, REPLY
+	}
 
 	ListView mTimeline;
 
@@ -29,9 +34,25 @@ public class TimelineActivity extends Activity {
 		setContentView(R.layout.activity_timeline);
 
 		mTimeline = (ListView) findViewById(R.id.timeline_list);
-		TwitterService service = TwitterServiceFactory.getService();
-		List<Tweet> tweets = service.getTimeline();
-		mTimeline.setAdapter(new TimelineAdapter(this, tweets));
+		mTimeline.setAdapter(new TimelineAdapter(this, new ArrayList<Tweet>()));
+
+		AsyncTask<Void, Void, List<Tweet>> task = new AsyncTask<Void, Void, List<Tweet>>() {
+
+			@Override
+			protected List<Tweet> doInBackground(Void... params) {
+				TwitterService service = TwitterServiceFactory.getService();
+				List<Tweet> tweets = service.getTimeline();
+				return tweets;
+			}
+
+			@Override
+			protected void onPostExecute(List<Tweet> result) {
+				TimelineAdapter adapter = (TimelineAdapter) mTimeline
+						.getAdapter();
+				adapter.addList(result);
+			}
+
+		}.execute();
 	}
 
 	@Override
@@ -56,6 +77,25 @@ public class TimelineActivity extends Activity {
 					.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		}
 
+		public void addList(List<Tweet> tweets) {
+			this.tweets.addAll(tweets);
+			notifyDataSetChanged();
+		}
+
+		@Override
+		public int getItemViewType(int position) {
+			Tweet tweet = (Tweet) getItem(position);
+			if (tweet.isReply()) {
+				return TweetType.REPLY.ordinal();
+			}
+			return TweetType.TWEET.ordinal();
+		}
+
+		@Override
+		public int getViewTypeCount() {
+			return TweetType.values().length;
+		}
+
 		public int getCount() {
 			return tweets.size();
 		}
@@ -69,10 +109,20 @@ public class TimelineActivity extends Activity {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
+			Tweet tweet = (Tweet) getItem(position);
+
 			TweetViewHolder holder = null;
 			if (convertView == null) {
-				convertView = inflater.inflate(R.layout.list_item_tweet,
-						parent, false);
+
+				if (tweet.isReply()) {
+					convertView = inflater.inflate(R.layout.list_item_reply,
+							parent, false);
+
+				} else {
+					convertView = inflater.inflate(R.layout.list_item_tweet,
+							parent, false);
+
+				}
 				holder = new TweetViewHolder();
 
 				convertView.setTag(holder);
@@ -85,8 +135,6 @@ public class TimelineActivity extends Activity {
 			} else {
 				holder = (TweetViewHolder) convertView.getTag();
 			}
-
-			Tweet tweet = (Tweet) getItem(position);
 
 			holder.authorName.setText(tweet.getAuthor().getDisplayName());
 			holder.content.setText(tweet.getContent());

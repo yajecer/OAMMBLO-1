@@ -2,21 +2,22 @@ package com.fr4gus.android.oammblo.ui;
 
 import java.util.List;
 
-import com.fr4gus.android.oammblo.R;
-import com.fr4gus.android.oammblo.bo.Tweet;
-import com.fr4gus.android.oammblo.service.TwitterService;
-import com.fr4gus.android.oammblo.service.TwitterServiceFactory;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Base64;
+import android.os.Debug;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.fr4gus.android.oammblo.R;
+import com.fr4gus.android.oammblo.bo.Tweet;
+import com.fr4gus.android.oammblo.service.TwitterService;
+import com.fr4gus.android.oammblo.service.TwitterServiceFactory;
 
 public class TimelineActivity extends Activity {
 
@@ -31,6 +32,18 @@ public class TimelineActivity extends Activity {
 		TwitterService service = TwitterServiceFactory.getService();
 		List<Tweet> tweets = service.getTimeline();
 		mTimeline.setAdapter(new TimelineAdapter(this, tweets));
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Debug.startMethodTracing("despues_viewholder_debug");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		Debug.stopMethodTracing();
 	}
 
 	private static class TimelineAdapter extends BaseAdapter {
@@ -56,21 +69,36 @@ public class TimelineActivity extends Activity {
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			View view = inflater.inflate(R.layout.list_item_tweet, parent,
-					false);
+			TweetViewHolder holder = null;
+			if (convertView == null) {
+				convertView = inflater.inflate(R.layout.list_item_tweet,
+						parent, false);
+				holder = new TweetViewHolder();
 
-			TextView authorName = (TextView) view
-					.findViewById(R.id.timeline_item_displayname);
-			TextView content = (TextView) view
-					.findViewById(R.id.timeline_tweet_content);
+				convertView.setTag(holder);
+
+				holder.authorName = (TextView) convertView
+						.findViewById(R.id.timeline_item_displayname);
+				holder.content = (TextView) convertView
+						.findViewById(R.id.timeline_tweet_content);
+
+			} else {
+				holder = (TweetViewHolder) convertView.getTag();
+			}
 
 			Tweet tweet = (Tweet) getItem(position);
 
-			authorName.setText(tweet.getAuthor().getDisplayName());
-			content.setText(tweet.getContent());
+			holder.authorName.setText(tweet.getAuthor().getDisplayName());
+			holder.content.setText(tweet.getContent());
 
-			return view;
+			return convertView;
 		}
+	}
 
+	private static class TweetViewHolder {
+		public TextView authorName;
+		public TextView content;
+		public ImageView photoThumbnail;
+		public TextView date;
 	}
 }
